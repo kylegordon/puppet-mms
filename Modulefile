@@ -1,0 +1,8 @@
+name    'mms'
+version '0.1.0'
+source 'git@github.com:tystr/puppet-mongodb-mms.git'
+author 'Tyler Stroud <tyler@tylerstroud.com>'
+license 'MIT'
+summary 'UNKNOWN'
+description 'UNKNOWN'
+project_page 'https://github.com/tystr/puppet-mongodb-mms'
