@@ -16,8 +16,7 @@ describe 'mms', :type => :class do
   
     it { should contain_exec('download-mms').with(
       :command => 'wget https://mms.mongodb.com/settings/mms-monitoring-agent.tar.gz /tmp',
-      :require => 'Package[wget]'
-    ) }
+    ).that_requires('Package[wget]') }
 
     it { should contain_exec('set-mms-server').with(
       :command => "sed -ie 's|@MMS_SERVER@|https://mms.mongodb.com|' /opt/mongodb/mms/settings.py"
@@ -26,13 +25,10 @@ describe 'mms', :type => :class do
       :command => "sed -ie 's|@API_KEY@|abcdefg|' /opt/mongodb/mms/settings.py"
     ) }
 
-    it { should contain_exec('install-mms').with(
-      :require => '[Exec[download-mms]{:command=>"download-mms"}, File[/opt/mongodb/mms]{:path=>"/opt/mongodb/mms"}]'
-    ) }
+    it { should contain_exec('install-mms').that_requires('File[/opt/mongodb/mms]').that_requires('Exec[download-mms]') }
 
     it { should contain_service('mongodb-mms').with(
       :ensure => 'running',
-      :require => 'File[/etc/init.d/mongodb-mms]'
-    ) }
+    ).that_requires('File[/etc/init.d/mongodb-mms]')}
   end
 end
