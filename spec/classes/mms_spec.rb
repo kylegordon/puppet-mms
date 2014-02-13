@@ -25,10 +25,7 @@ describe 'mms', :type => :class do
       :command => "sed -ie 's|@API_KEY@|abcdefg|' /opt/mongodb/mms/settings.py"
     ) }
 
-    it { should contain_exec('install-mms')
-      .that_requires('File[/opt/mongodb/mms]')
-      .that_requires('Exec[download-mms]')
-    }
+    it { should contain_exec('install-mms').that_requires('File[/opt/mongodb/mms]').that_requires('Exec[download-mms]') }
 
     it { should contain_service('mongodb-mms').with(
       :ensure => 'running',
