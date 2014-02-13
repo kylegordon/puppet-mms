@@ -6,42 +6,51 @@
 #
 # Document parameters here.
 #
-# [*sample_parameter*]
-#   Explanation of what this parameter affects and what it defaults to.
-#   e.g. "Specify one or more upstream ntp servers as an array."
+# [*api_key*]
+#   Your mongodb API key. You can find your key by logging into MMS, navigating
+#   to the "Settings" page and clicking "Api Settings". This parameter is
+#   required.
 #
-# === Variables
+# [*install_dir*]
+#   The location where the mms agent will be installed.
 #
-# Here you should define a list of variables that this module would require.
+# [*download_url*]
+#   The location from where to download the mms agent. You probably won't need
+#   to change this.
 #
-# [*sample_variable*]
-#   Explanation of how this variable affects the funtion of this class and if
-#   it has a default. e.g. "The parameter enc_ntp_servers must be set by the
-#   External Node Classifier as a comma separated list of hostnames." (Note,
-#   global variables should be avoided in favor of class parameters as
-#   of Puppet 2.6.)
+# [*tmp_dir*]
+#   The temporary location to where files will be downloaded before installation.
+#
+# [*mms_server*]
+#   The server the agent should be talking to. You probably won't need to
+#   change this.
+#
+# [*mms_user*]
+#   The user you want MMS to run as. This user will be created for you.
 #
 # === Examples
 #
-#  class { mms:
-#    servers => [ 'pool.ntp.org', 'ntp.local.company.com' ],
-#  }
+# * Minimal installation with defaults
+#
+# class { mms:
+#   api_key => '809ca70c71af0795fccec87aa10ed925'
+# }
 #
 # === Authors
 #
-# Tyler Stroud <tyler@tylerstroud.com>
+# Tyler Stroud <mailto:tyler@tylerstroud.com>
 #
 # === Copyright
 #
 # Copyright 2014 Tyler Stroud
 #
 class mms (
+  $api_key,
   $install_dir  = $mms::params::install_dir,
   $download_url = $mms::params::download_url,
   $tmp_dir      = $mms::params::tmp_dir,
   $mms_server   = $mms::params::mms_server,
-  $mms_user     = $mms::params::mms_user,
-  $api_key
+  $mms_user     = $mms::params::mms_user
 ) inherits mms::params {
   package { 'python-setuptools':
     ensure => installed
