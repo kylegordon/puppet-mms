@@ -34,4 +34,58 @@ describe 'mms', :type => :class do
       :ensure => 'running',
     ).that_requires('File[/etc/init.d/mongodb-mms]')}
   end
+  
+  context 'with custom download_url' do
+      let(:params) { {
+          :api_key => 'abcdefg',
+          :download_url => 'custom-download-url',
+      } }
+
+      it { should compile }
+
+      it { should contain_exec('download-mms').with(
+          :command => 'wget custom-download-url /tmp'
+      ) }
+  end
+
+  context 'with custom tmp_dir' do
+      let(:params) { {
+          :api_key => 'abcdefg',
+          :tmp_dir => '/my/tmp'
+      } }
+
+      it { should compile }
+
+      it { should contain_exec('download-mms').with(
+          :command => 'wget https://mms.mongodb.com/settings/mms-monitoring-agent.tar.gz /my/tmp'
+      ) }
+  end
+
+  context 'with custom mms_server' do
+      let(:params) { {
+          :api_key => 'abcdefg',
+          :mms_server => 'custom-mms-server'
+      } }
+
+      it { should compile }
+
+      it { should contain_exec('set-mms-server').with(
+          :command => "sed -ie 's|@MMS_SERVER@|custom-mms-server|' /opt/mongodb/mms/settings.py"
+      ) }
+  end
+
+  context 'with custom mms_user' do
+      let(:params) { {
+          :api_key => 'abcdefg',
+          :mms_user => 'my-user'
+      } }
+
+      it { should compile }
+
+      it { should contain_user('my-user') }
+      it { should contain_file('/opt/mongodb/mms').with(
+          :owner => 'my-user',
+          :group => 'my-user'
+      ) }
+  end
 end
