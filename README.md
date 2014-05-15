@@ -1,5 +1,6 @@
 puppet-mms
 ==========
+[![Build Status](https://travis-ci.org/tystr/puppet-mms.png?branch=master)](https://travis-ci.org/tystr/puppet-mms)
 
 A puppet module for installing and configuring Mongodb's [MMS](https://mms.mongodb.com) agent.
 
