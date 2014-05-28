@@ -90,7 +90,7 @@ class mms (
   exec { 'install-mms':
     command => "tar -C ${install_dir} xzf /tmp/mms/monitoring-agent.tar.gz",
     path    => ['/bin', '/usr/bin'],
-    require => [Exec['download-mms'], File['/opt/mongodb/mms']]
+    require => [Exec['download-mms'], File[$install_dir]]
   }
 
   exec { 'set-license-key':
