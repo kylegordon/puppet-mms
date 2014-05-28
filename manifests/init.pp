@@ -111,6 +111,7 @@ class mms (
   }
 
   service { 'mongodb-mms':
+    enable => true,
     ensure => running,
     require => File['/etc/init.d/mongodb-mms']
   }

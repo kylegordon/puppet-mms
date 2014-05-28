@@ -31,6 +31,7 @@ describe 'mms', :type => :class do
     }
 
     it { should contain_service('mongodb-mms').with(
+      :enable => true,
       :ensure => 'running',
     ).that_requires('File[/etc/init.d/mongodb-mms]')}
   end
