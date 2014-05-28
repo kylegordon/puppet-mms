@@ -11,22 +11,22 @@ describe 'mms', :type => :class do
     it { should contain_package('python-devel') } # centos
     it { should contain_package('python-setuptools') }
 
-    it { should contain_file('/opt/mongodb/mms') }
-    it { should contain_file('/etc/init.d/mongodb-mms').with_content(/DAEMON_PATH=\/opt\/mongodb\/mms/)}
+    it { should contain_file('/opt/mms') }
+    it { should contain_file('/etc/init.d/mongodb-mms').with_content(/DAEMON_PATH=\/opt\/mms/)}
   
     it { should contain_exec('download-mms').with(
       :command => 'wget https://mms.mongodb.com/settings/mms-monitoring-agent.tar.gz /tmp',
     ).that_requires('Package[wget]') }
 
     it { should contain_exec('set-mms-server').with(
-      :command => "sed -ie 's|@MMS_SERVER@|https://mms.mongodb.com|' /opt/mongodb/mms/settings.py"
+      :command => "sed -ie 's|@MMS_SERVER@|https://mms.mongodb.com|' /opt/mms/settings.py"
     ) }
     it { should contain_exec('set-license-key').with(
-      :command => "sed -ie 's|@API_KEY@|abcdefg|' /opt/mongodb/mms/settings.py"
+      :command => "sed -ie 's|@API_KEY@|abcdefg|' /opt/mms/settings.py"
     ) }
 
     it { should contain_exec('install-mms')
-      .that_requires('File[/opt/mongodb/mms]')
+      .that_requires('File[/opt/mms]')
       .that_requires('Exec[download-mms]')
     }
 
@@ -71,7 +71,7 @@ describe 'mms', :type => :class do
       it { should compile }
 
       it { should contain_exec('set-mms-server').with(
-          :command => "sed -ie 's|@MMS_SERVER@|custom-mms-server|' /opt/mongodb/mms/settings.py"
+          :command => "sed -ie 's|@MMS_SERVER@|custom-mms-server|' /opt/mms/settings.py"
       ) }
   end
 
@@ -84,7 +84,7 @@ describe 'mms', :type => :class do
       it { should compile }
 
       it { should contain_user('my-user') }
-      it { should contain_file('/opt/mongodb/mms').with(
+      it { should contain_file('/opt/mms').with(
           :owner => 'my-user',
           :group => 'my-user'
       ) }
