@@ -52,15 +52,16 @@ class mms (
   $mms_server   = $mms::params::mms_server,
   $mms_user     = $mms::params::mms_user
 ) inherits mms::params {
-  package { 'python-setuptools':
+
+  package { ['gcc', 'wget', 'python-setuptools'] :
     ensure => installed
   }
-  package { ['gcc', 'python-devel']:
-    ensure => installed
+
+  case $osfamily {
+    'debian': { package { 'python-dev': ensure => installed } }
+    'redhat': { package { 'python-devel': ensure => installed } }
   }
-  package { 'wget':
-    ensure => installed
-  }
+
   exec { 'install-pymongo':
     command => 'easy_install -U pymongo',
     path    => ['/bin', '/usr/bin'],
