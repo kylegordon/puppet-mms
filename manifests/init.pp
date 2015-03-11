@@ -52,7 +52,7 @@ class mms (
   $mms_server   = $mms::params::mms_server,
   $mms_user     = $mms::params::mms_user
 ) inherits mms::params {
-
+  
   package { ['gcc', 'wget', 'python-setuptools'] :
     ensure => installed
   }
@@ -69,10 +69,10 @@ class mms (
   }
 
   exec { 'download-mms':
-    command => "wget ${download_url} ${tmp_dir}",
+    command => "wget ${download_url} -P ${tmp_dir}",
     path    => ['/bin', '/usr/bin'],
     require => Package['wget'],
-    creates => '/tmp/mms/monitoring-agent.tar.gz'
+    creates => '/tmp/mms-monitoring-agent.tar.gz'
   }
 
   file { $install_dir:
@@ -89,19 +89,19 @@ class mms (
   }
 
   exec { 'install-mms':
-    command => "tar -C ${install_dir} xzf /tmp/mms/monitoring-agent.tar.gz",
+    command => "tar -C ${install_dir} -xzf /tmp/mms-monitoring-agent.tar.gz",
     path    => ['/bin', '/usr/bin'],
     require => [Exec['download-mms'], File[$install_dir]]
   }
 
   exec { 'set-license-key':
-    command => "sed -ie 's|@API_KEY@|${api_key}|' ${install_dir}/settings.py",
+    command => "sed -ie 's|@API_KEY@|${api_key}|' ${install_dir}/mms-agent/settings.py",
     path    => ['/bin', '/use/bin'],
     require => Exec['install-mms']
   }
 
   exec { 'set-mms-server':
-    command => "sed -ie 's|@MMS_SERVER@|${mms_server}|' ${install_dir}/settings.py",
+    command => "sed -ie 's|@MMS_SERVER@|${mms_server}|' ${install_dir}/mms-agent/settings.py",
     path    => ['/bin', '/usr/bin'],
     require => Exec['install-mms']
   }
