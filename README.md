@@ -12,7 +12,8 @@ Quick Start
 
 ```puppet
 class { 'mms':
-  api_key => 'a3fe2877b0abb753e6deaec516c2a2a9'
+  api_key => 'a3fe2877b0abb753e6deaec516c2a2a9',
+  group_id => 'abc123'
 }
 ```
 
