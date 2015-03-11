@@ -46,6 +46,7 @@
 #
 class mms (
   $api_key,
+  $group_id,
   $install_dir  = $mms::params::install_dir,
   $download_url = $mms::params::download_url,
   $tmp_dir      = $mms::params::tmp_dir,
@@ -89,29 +90,50 @@ class mms (
   }
 
   exec { 'install-mms':
-    command => "tar -C ${install_dir} -xzf /tmp/mms-monitoring-agent.tar.gz",
+    command => "tar -C ${install_dir} --strip 1 -xzf /tmp/${download_file}",
     path    => ['/bin', '/usr/bin'],
     require => [Exec['download-mms'], File[$install_dir]]
   }
 
-  exec { 'set-license-key':
-    command => "sed -ie 's|@API_KEY@|${api_key}|' ${install_dir}/mms-agent/settings.py",
+  exec { 'set-api-key':
+    command => "sed -ie 's|@API_KEY@|${api_key}|' ${install_dir}/local.config",
     path    => ['/bin', '/use/bin'],
     require => Exec['install-mms']
   }
 
-  exec { 'set-mms-server':
-    command => "sed -ie 's|@MMS_SERVER@|${mms_server}|' ${install_dir}/mms-agent/settings.py",
-    path    => ['/bin', '/usr/bin'],
+  exec { 'set-group-id':
+    command => "sed -ie 's|@GROUP_ID@|${group_id}|' ${install_dir}/local.config",
+    path    => ['/bin', '/use/bin'],
     require => Exec['install-mms']
-  }
+  } 
 
-  file { '/etc/init.d/mongodb-mms':
-    content => template('mms/etc/init.d/mongodb-mms.erb'),
-    mode    => 0755,
-    owner   => 'root',
-    group   => 'root',
-    require => [Exec['set-license-key'], Exec['set-mms-server']],
+  case $osfamily {
+    'redhat': { 
+      file { '/etc/init.d/mongodb-mms':
+        content => template('mms/etc/init.d/mongodb-mms.erb'),
+        mode    => 0755,
+        owner   => 'root',
+        group   => 'root',
+        require => [Exec['set-api-key'], Exec['set-group-id']],
+      }
+    }
+    'debian': { 
+      file { '/etc/default/mongodb-mms-automation-agent':
+        content => template('mms/etc/default/mongodb-mms-automation-agent.erb'),
+        mode    => 0755,
+        owner   => 'root',
+        group   => 'root',
+        require => [Exec['set-api-key'], Exec['set-group-id']],
+      }
+      file { '/etc/init.d/mongodb-mms':
+        content => template('mms/etc/init.d/mongodb-mms.debian.erb'),
+        mode    => 0755,
+        owner   => 'root',
+        group   => 'root',
+        require => [Exec['set-api-key'], Exec['set-group-id']],
+      }
+    }
+
   }
 
   service { 'mongodb-mms':

@@ -5,7 +5,7 @@
 # processname: mongodb-mms-agent
 
 PYTHON=/usr/bin/python
-DAEMON_PATH=<%=@install_dir%>
+DAEMON_PATH=<%=@install_dir%>/mms-agent/
 
 DAEMON=agent.py
 DAEMONOPTS=""
@@ -14,7 +14,7 @@ NAME=mms-agent
 DESC="10gen MMS Backup Agent"
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
-LOGFILE=/var/log/mongo/mms-agent.log
+LOGFILE=/var/log/mongodb/mms-agent.log
 
 case "$1" in
 start)
